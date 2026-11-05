@@ -1,93 +1,34 @@
-import { ArrowUpRight } from "lucide-react";
-import type { ReactNode } from "react";
-import { hero, site } from "@/content/site";
-import { Parallax } from "../Parallax";
-import { Reveal } from "../Reveal";
+import { Cabinet, Hub, Laptop, Stack, Terrain } from "@lucasmarkes/hairline/react";
+import { hero } from "@/content/site";
+import { LiveNote } from "../LiveNote";
 import { Container } from "../ui";
-import { FactIllustration, type FactScene } from "./FactIllustration";
 
-const valueClass = "font-display text-[30px] font-bold leading-[1.1] tracking-[-0.01em] text-fg lg:text-[34px]";
+const f = hero.facts;
 
-function Fact({
-  scene,
-  label,
-  href,
-  children,
-}: {
-  scene: FactScene;
-  label: string;
-  href?: string;
-  children: ReactNode;
-}) {
-  const body = (
-    <>
-      <div className="flex w-[132px] shrink-0 items-center justify-center sm:w-[150px]">
-        <FactIllustration scene={scene} />
-      </div>
-      <div className="flex min-w-0 flex-col gap-2">
-        <span className="text-[14px] font-medium text-accent-2">{label}</span>
-        {children}
-      </div>
-    </>
-  );
-  const cls =
-    "fact-card flex h-full items-center gap-6 rounded-[20px] border border-line-2 bg-panel p-5 sm:gap-8 sm:p-7";
-  return href ? (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
-      {body}
-    </a>
-  ) : (
-    <div className={cls}>{body}</div>
-  );
-}
+/** Miniaturas das figuras prontas do Hairline, escolhidas pelo que cada informação representa. */
+const items = [
+  { label: f.role.label, value: f.role.value, Figure: Laptop, figure: "Notebook: a tela responde ao cursor." },
+  { label: f.place.label, value: f.place.value, note: <LiveNote kind="time" />, Figure: Terrain, figure: "Relevo: o terreno sob o cursor se levanta." },
+  { label: f.process.label, value: f.process.value, Figure: Hub, figure: "Núcleo ligado a vários pontos: o ponto sob o cursor reage." },
+  { label: f.company.label, value: f.company.value, note: <LiveNote kind="years" />, Figure: Cabinet, figure: "Arquivo: a gaveta sob o cursor se abre." },
+  { label: f.areas.label, value: f.areas.items.join(" / "), Figure: Stack, figure: "Camadas empilhadas: a camada sob o cursor se destaca." },
+];
 
-/** Credenciais da abertura: um cartão ilustrado por informação. */
+/** Credenciais em uma faixa curta logo abaixo da abertura: contexto rápido, sem rolagem presa. */
 export function Facts() {
-  const f = hero.facts;
   return (
-    <section aria-label="Credenciais" className="pb-24 pt-6 lg:pb-36 lg:pt-10">
-      <Container className="grid gap-4 md:grid-cols-2 lg:gap-5">
-        <div className="flex flex-col gap-4 lg:gap-5">
-          <Reveal>
-            <Fact scene="role" label={f.role.label}>
-              <span className={valueClass}>{f.role.value}</span>
-            </Fact>
-          </Reveal>
-          <Reveal delay={80}>
-            <Fact scene="process" label={f.process.label}>
-              <span className={valueClass}>{f.process.value}</span>
-            </Fact>
-          </Reveal>
-          <Reveal delay={160}>
-            <Fact scene="areas" label={f.areas.label}>
-              <span className={valueClass}>{f.areas.items.join(" · ")}</span>
-            </Fact>
-          </Reveal>
-        </div>
-
-        <Parallax speed={0.05} className="md:pt-12">
-          <div className="flex flex-col gap-4 lg:gap-5">
-            <Reveal delay={120}>
-              <Fact scene="place" label={f.place.label}>
-                <span className={valueClass}>{f.place.value}</span>
-              </Fact>
-            </Reveal>
-            <Reveal delay={200}>
-              <Fact scene="company" label={f.company.label}>
-                <span className={valueClass}>{f.company.value}</span>
-              </Fact>
-            </Reveal>
-            <Reveal delay={280}>
-              <Fact scene="github" label={f.github.label} href={site.github}>
-                <span className={`${valueClass} inline-flex items-center gap-2 text-[26px] lg:text-[28px]`}>
-                  {f.github.value}
-                  <ArrowUpRight aria-hidden="true" className="size-5 shrink-0" />
-                  <span className="sr-only"> ({site.newTab})</span>
-                </span>
-              </Fact>
-            </Reveal>
-          </div>
-        </Parallax>
+    <section id="credenciais" aria-label="Credenciais" className="scroll-mt-16 pb-6 pt-8 lg:pb-10">
+      <Container>
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-8 sm:gap-x-10 sm:gap-y-6 lg:grid-cols-5">
+          {items.map(({ Figure, ...i }) => (
+            <div key={i.label}>
+              <Figure theme="dark" label={i.figure} className="hairline-figure mb-3 size-[64px] sm:mb-4 sm:size-[84px]" />
+              <dt className="text-[12px] font-medium uppercase tracking-[0.13em] text-accent-2">{i.label}</dt>
+              <dd className="mt-2 text-[16px] leading-snug sm:text-[18px] text-fg">{i.value}</dd>
+              {i.note ? <dd className="mt-1 text-[13px] text-fg-3">{i.note}</dd> : null}
+            </div>
+          ))}
+        </dl>
       </Container>
     </section>
   );

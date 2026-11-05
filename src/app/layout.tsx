@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Rajdhani, Space_Grotesk } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
+import { ScrollProgress } from "@/components/ScrollProgress";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { site } from "@/content/site";
 import "./globals.css";
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Pular para o conteúdo
         </a>
         <SmoothScroll />
+        <ScrollProgress />
         <Nav />
         <script
           type="application/ld+json"

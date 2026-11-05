@@ -1,3 +1,9 @@
+export type Shot = { src: string; width: number; height: number; kind: "browser" | "wide" | "phone"; alt: string };
+
+const dir = "/images/projects";
+const wide = (slug: string, file: string, width: number, height: number, alt: string): Shot => ({ src: `${dir}/${slug}/${file}.webp`, width, height, kind: "wide", alt });
+const phone = (slug: string, file: string, alt: string): Shot => ({ src: `${dir}/${slug}/${file}.webp`, width: 1072, height: 2192, kind: "phone", alt });
+
 export type Project = {
   slug: string;
   name: string;
@@ -20,8 +26,8 @@ export type Project = {
   stack: string[];
   flow: { nodes: string[]; edges: [number, number][]; loop?: boolean };
   link?: { label: string; href: string };
-  /** "browser" ganha moldura de navegador; "phone" e "device" já vêm com aparelho. */
-  media?: { src: string; width: number; height: number; frame: "browser" | "device" | "phone" };
+  /** Imagens do produto. A primeira é a capa (usada na home). "browser" ganha moldura de navegador; "wide" e "phone" já vêm com aparelho. */
+  gallery: Shot[];
   /** Cor do brilho atrás da imagem. */
   glow: string;
 };
@@ -68,7 +74,10 @@ export const projects: Project[] = [
     stack: ["Next.js", "React", "TypeScript", "Node.js", "Express", "MongoDB", "Zod", "Docker", "Debian", "Akamai Cloud"],
     flow: { nodes: ["Administração", "API (Express + Zod)", "MongoDB / Arquivos", "Next.js público", "Visitante"], edges: chain(5) },
     link: { label: "Site ao vivo", href: "https://www.erelachapelle.fr/fr" },
-    media: { src: "/images/projects/chapelle-wide.png", width: 1920, height: 1080, frame: "browser" },
+    gallery: [
+      { src: `${dir}/la-chapelle/00-capa.webp`, width: 1920, height: 1080, kind: "browser", alt: "Página inicial do site La Chapelle" },
+      { src: `${dir}/la-chapelle/live.webp`, width: 1348, height: 926, kind: "browser", alt: "Página de conteúdo do site La Chapelle" },
+    ],
     glow: "#8a1d36",
   },
   {
@@ -94,7 +103,11 @@ export const projects: Project[] = [
     stack: ["Flutter", "Dart", "Node.js", "MySQL", "Firebase", "Akamai Cloud"],
     flow: { nodes: ["Base documental", "Consulta", "Reunião", "Presença", "Votação eletrônica", "Atas e decisões"], edges: chain(6), loop: true },
     link: dzigne("icalvinus"),
-    media: { src: "/images/projects/icalvinus.webp", width: 2310, height: 1177, frame: "device" },
+    gallery: [
+      wide("icalvinus", "00-capa", 2310, 1177, "iCalvinus no computador e no celular"),
+      ...[1, 2, 3, 4, 5].map((i) => wide("icalvinus", `macbook-${i}`, 1863, 1177, `iCalvinus no computador, tela ${i}`)),
+      ...[1, 2, 3, 4].map((i) => phone("icalvinus", `iphone-${i}`, `iCalvinus no celular, tela ${i}`)),
+    ],
     glow: "#1f6fb2",
   },
   {
@@ -119,7 +132,10 @@ export const projects: Project[] = [
     stack: ["Flutter", "Dart", "Node.js", "MySQL", "Akamai Cloud"],
     flow: { nodes: ["Professor", "Base de conteúdo", "Simulado personalizado", "Estudante", "Respostas", "Acompanhamento"], edges: chain(6) },
     link: dzigne("oab-mack"),
-    media: { src: "/images/projects/oabmack.webp", width: 1072, height: 2192, frame: "phone" },
+    gallery: [
+      phone("oab-mack", "00-capa", "Aplicativo OAB Mack"),
+      ...[1, 2, 3, 4, 5, 6, 7].map((i) => phone("oab-mack", `iphone-${i}`, `OAB Mack, tela ${i}`)),
+    ],
     glow: "#c0262d",
   },
   {
@@ -148,7 +164,10 @@ export const projects: Project[] = [
       edges: [[0, 1], [0, 2], [0, 3], [1, 4], [3, 4], [2, 5]],
     },
     link: dzigne("sigmaapp"),
-    media: { src: "/images/projects/sigmaapp.webp", width: 1072, height: 2192, frame: "phone" },
+    gallery: [
+      phone("sigmaapp", "00-capa", "Aplicativo SigmaApp"),
+      ...[1, 2, 3, 4, 5, 6, 7].map((i) => phone("sigmaapp", `iphone-${i}`, `SigmaApp, tela ${i}`)),
+    ],
     glow: "#2a5bd7",
   },
   {
@@ -176,7 +195,11 @@ export const projects: Project[] = [
       edges: [[0, 1], [1, 2], [1, 3], [3, 4], [4, 5], [5, 2]],
     },
     link: dzigne("ipiconecta"),
-    media: { src: "/images/projects/ipiconecta.webp", width: 2300, height: 1177, frame: "device" },
+    gallery: [
+      wide("ipiconecta", "00-capa", 2300, 1177, "IPIConecta no computador e no celular"),
+      wide("ipiconecta", "macbook-1", 1863, 1177, "IPIConecta no computador"),
+      ...[1, 2, 3, 4].map((i) => phone("ipiconecta", `iphone-${i}`, `IPIConecta no celular, tela ${i}`)),
+    ],
     glow: "#3d4fb8",
   },
   {
@@ -201,7 +224,10 @@ export const projects: Project[] = [
     ],
     stack: ["Flutter", "Dart", "Node.js", "MongoDB"],
     flow: { nodes: ["Cliente", "Busca", "Perfil", "Avaliações", "Contato", "Prestador"], edges: chain(6) },
-    media: { src: "/images/projects/contrataja-phone.png", width: 1075, height: 2166, frame: "phone" },
+    gallery: [
+      { src: `${dir}/contrataja/00-capa.webp`, width: 1046, height: 2157, kind: "phone", alt: "Aplicativo ContrataJá" },
+      wide("contrataja", "web-1", 2400, 1838, "Tela de entrada do ContrataJá no tablet"),
+    ],
     link: dzigne("contrata-ja"),
     glow: "#b08300",
   },

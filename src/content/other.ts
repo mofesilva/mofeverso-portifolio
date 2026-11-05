@@ -40,7 +40,14 @@ export const studio: StudioProject[] = [
     notice: "Em desenvolvimento. Não é um serviço financeiro em produção.",
     figure: "finch",
   },
-  { n: "04", name: "Minim Agent", stage: "Projeto pessoal", figure: "minim" },
+  {
+    n: "04",
+    name: "Minim Agent",
+    stage: "Projeto pessoal",
+    text: "Tarefas, projetos, agenda, notas, listas de games, livros, filmes e animes, diário alimentar e finanças em um só app, cada área como um módulo com tags e vínculos compartilhados. Um agente de IA registra o que você conta; as telas permitem editar à mão, no mesmo banco.",
+    notice: "Conecta-se ao Obsidian e traz as finanças do Finch. Os dados ficam em servidor próprio, expostos por uma API com MCP, para você usar o assistente que preferir.",
+    figure: "minim",
+  },
 ];
 
 /** Árvore de habilidades: cada nó é uma tecnologia; "passive" são as ligadas a uma principal. */

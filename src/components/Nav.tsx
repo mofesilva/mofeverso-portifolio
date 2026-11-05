@@ -16,6 +16,16 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Com o menu aberto a página por trás não rola.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
@@ -60,7 +70,7 @@ export function Nav() {
       </div>
 
       {open ? (
-        <nav id="menu-movel" aria-label="Principal" className="border-t border-line px-6 pb-6 md:hidden">
+        <nav id="menu-movel" aria-label="Principal" className="absolute inset-x-0 top-full h-[calc(100svh-4rem)] overflow-y-auto border-t border-line bg-bg px-6 pb-6 md:hidden">
           <ul className="flex flex-col">
             {[...site.nav, site.contactCta].map((item) => (
               <li key={item.href} className="border-b border-line last:border-0">

@@ -12,7 +12,7 @@ export function MethodAtom() {
       src={`/hairline/atomo.html?v=${HAIRLINE_VERSIONS.atomo}`}
       title="Átomo: orbes em órbita de um núcleo. Passe o cursor sobre uma órbita para desacelerar o orbe."
       loading="lazy"
-      className="mx-auto block aspect-[5/4] w-full max-w-[680px] border-0"
+      className="mx-auto block aspect-[5/4] w-full max-w-[680px] border-0 pointer-coarse:pointer-events-none"
     />
   );
 }

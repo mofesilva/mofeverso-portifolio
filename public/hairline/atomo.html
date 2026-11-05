@@ -883,5 +883,18 @@ hairline({
   mount,
 });
 </script>
+<script>
+// A roda do mouse sobre o iframe não chega à página, então a rolagem suave (Lenis) travava ali.
+// Aqui o evento é repassado à página, que continua rolando normalmente.
+window.addEventListener("wheel", (e) => {
+  if (window.parent === window) return;
+  e.preventDefault();
+  window.parent.dispatchEvent(new WheelEvent("wheel", {
+    deltaX: e.deltaX, deltaY: e.deltaY, deltaZ: e.deltaZ, deltaMode: e.deltaMode,
+    ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: e.metaKey,
+    bubbles: true, cancelable: true,
+  }));
+}, { passive: false });
+</script>
 </body>
 </html>

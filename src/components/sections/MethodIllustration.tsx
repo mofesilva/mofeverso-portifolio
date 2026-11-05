@@ -9,14 +9,14 @@ const K = 0.866;
 const WHITE = "237,237,239";
 const ACCENT = "173,163,255";
 
-export type V = [number, number, number];
-export type Pt = [number, number];
+type V = [number, number, number];
+type Pt = [number, number];
 type Tone = "white" | "accent";
-export type Opts = { tone?: Tone; o?: number; tint?: boolean; solid?: boolean; glass?: boolean; dash?: string };
+type Opts = { tone?: Tone; o?: number; tint?: boolean; solid?: boolean; glass?: boolean; dash?: string };
 
 const project = ([x, y, z]: V): Pt => [(x - y) * K, (x + y) * 0.5 - z];
 
-export function makeKit() {
+function makeKit() {
   const bounds: Pt[] = [];
   const pts = (list: V[]) =>
     list
@@ -75,7 +75,7 @@ export function makeKit() {
   return { bounds, prism, box, line };
 }
 
-export type Kit = ReturnType<typeof makeKit>;
+type Kit = ReturnType<typeof makeKit>;
 
 /** Cubos de vidro encaixados, cada vez menores, até o núcleo: a demanda sendo descascada. */
 function diagnosis({ box, line }: Kit): ReactNode {

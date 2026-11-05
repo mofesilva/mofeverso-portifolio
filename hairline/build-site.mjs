@@ -16,6 +16,7 @@ const stage = /--color-stage:\s*(#[0-9a-fA-F]{6})/.exec(readFileSync(here("../sr
 /** Fundo e cores de cada página: o átomo fica sobre o fundo do site, os demais sobre o painel dos cards. */
 const pages = [
   { file: "atomo", src: "atom.js", bg: "#09090b", edge: "#ededef", extra: `[data-hairline] svg .dot.m.orb { fill: ${stage}; }`, width: 680 },
+  { file: "impressora", src: "printer.js", bg: "#09090b", edge: "#ededef", width: 520 },
 ];
 
 const html = ({ bg, edge, extra = "", width }, figure) => `<!doctype html>
@@ -58,6 +59,19 @@ window.hairline = (figure) => {
 </script>
 <script>
 ${figure}
+</script>
+<script>
+// A roda do mouse sobre o iframe não chega à página, então a rolagem suave (Lenis) travava ali.
+// Aqui o evento é repassado à página, que continua rolando normalmente.
+window.addEventListener("wheel", (e) => {
+  if (window.parent === window) return;
+  e.preventDefault();
+  window.parent.dispatchEvent(new WheelEvent("wheel", {
+    deltaX: e.deltaX, deltaY: e.deltaY, deltaZ: e.deltaZ, deltaMode: e.deltaMode,
+    ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: e.metaKey,
+    bubbles: true, cancelable: true,
+  }));
+}, { passive: false });
 </script>
 </body>
 </html>

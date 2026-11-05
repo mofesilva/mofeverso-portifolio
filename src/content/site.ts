@@ -32,7 +32,7 @@ export const hero = {
     name: "Moisés Ferreira e Silva",
     nickname: "Mofe",
   },
-  /** Credenciais reunidas num único bloco, logo abaixo da abertura. */
+  /** Credenciais em faixa curta, logo abaixo da abertura. */
   facts: {
     role: { label: "Atuação", value: "Full stack software engineer" },
     place: { label: "Base", value: "Belo Horizonte / Brasil" },

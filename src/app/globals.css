@@ -48,6 +48,15 @@ h3 {
   html {
     background: var(--color-bg);
     color-scheme: dark;
+    /* Sem barra de rolagem do navegador; a posição é mostrada pela ScrollProgress. */
+    scrollbar-width: none;
+    /* Nada largo (brilhos, diagramas) pode fazer a página escorregar para o lado no celular. */
+    overflow-x: clip;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   /* O Lenis assume a rolagem suave; o CSS nativo brigaria com ele. */
@@ -69,6 +78,7 @@ h3 {
     font-size: 16px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
   }
 
   h1,
@@ -144,21 +154,26 @@ h3 {
   transform: none;
 }
 
-/* Ilustrações das informações: reagem ao cartão. */
-.fact-art {
-  transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+/* Troca de passo na sequência de informações. Não depende de reduced-motion. */
+@keyframes fact-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
 }
-.fact-card:hover .fact-art,
-.fact-card:focus-within .fact-art {
-  transform: rotate(-5deg) scale(1.07);
+@keyframes fact-fig {
+  from {
+    opacity: 0;
+    transform: scale(0.94) rotate(-3deg);
+  }
 }
-.fact-card {
-  transition: border-color 300ms, background-color 300ms;
+.fact-in {
+  animation: fact-in 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-.fact-card:hover {
-  border-color: rgb(255 255 255 / 0.26);
-  background-color: var(--color-panel-2);
+.fact-fig {
+  animation: fact-fig 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   html {

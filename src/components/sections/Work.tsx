@@ -1,54 +1,122 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { projects } from "@/content/projects";
 import { skillTree } from "@/content/other";
 import { work } from "@/content/site";
 import { SkillIcon } from "../SkillIcon";
+import { StepNav } from "../StepNav";
+import { useScrollSteps } from "../useScrollSteps";
 import { Container, SectionHeader } from "../ui";
 
 const order = ["icalvinus", "oab-mack", "sigmaapp", "ipiconecta", "contrataja", "la-chapelle"];
 const collection = order.map((slug) => projects.find((project) => project.slug === slug)!);
+const N = collection.length;
 
+/** Sequência presa à tela, um projeto por passo, rolando para trocar. */
 export function Work() {
-  const [selected, setSelected] = useState(0);
-  const p = collection[selected];
+  const { ref, index: scrollIndex, progress, goTo, height } = useScrollSteps<HTMLDivElement>(N);
+  // No celular a sequência presa não funciona (o conteúdo é mais alto que a tela): a troca é por toque.
+  const [mobile, setMobile] = useState(false);
+  const [picked, setPicked] = useState(0);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  const index = mobile ? picked : scrollIndex;
+  const p = collection[index];
+
   return (
-    <section id="trabalho" aria-labelledby="trabalho-titulo" className="scroll-mt-16 py-24 lg:py-36">
-      <Container>
-      <SectionHeader id="trabalho-titulo" title={work.title} aside={<><p className="font-medium text-fg">{work.subtitle}</p><p className="mt-2">{work.text}</p></>} />
-      <nav aria-label="Escolher projeto" className="mt-14 grid grid-cols-3 gap-2 sm:gap-3 lg:mt-16">
-        {collection.map((project, i) => (
-          <button key={project.slug} type="button" aria-label={project.name} title={project.name} aria-pressed={selected === i} onClick={() => setSelected(i)} className={`flex h-20 items-center justify-center rounded-2xl border bg-panel p-3 transition-colors sm:h-24 sm:p-5 ${selected === i ? "border-accent ring-1 ring-accent" : "border-line-2 hover:border-fg-3"}`}>
-            <span className="relative block h-full w-full max-w-[200px]"><Image src={project.slug === "sigmaapp" ? "/images/projects/sigma-brand.png" : `/images/projects/logo-${project.slug}${project.slug === "ipiconecta" || project.slug === "contrataja" ? "-light" : ""}.png`} alt="" fill sizes="(min-width: 640px) 200px, 30vw" className="object-contain" /></span>
-          </button>
-        ))}
-      </nav>
-      <div className="mt-4 overflow-hidden rounded-[24px] border border-line-2 bg-panel">
-        <div className="p-5 sm:p-8 lg:p-10">
-          <article className="min-w-0" aria-live="polite">
-            <div className="grid items-center gap-5 px-1 pb-4 pt-3 md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] md:px-4 lg:min-h-[550px]">
-              <div className="order-2 md:order-1">
-                <p className="text-[12px] font-medium uppercase tracking-[0.13em] text-accent-2">{p.category} / {p.platform}</p>
-                <h3 className="mt-5 text-[48px] leading-none sm:text-[64px]">{p.name}</h3>
-                <p className="mt-6 max-w-[38ch] text-[18px] leading-relaxed text-fg-2">{p.solution}</p>
-                <p className="mt-6 text-[14px] text-fg-2"><span className="text-fg">Cliente</span> · {p.client}</p>
-                <div className="mt-7 flex flex-wrap gap-2" aria-label={`Tecnologias de ${p.name}`}>
-                  {p.stack.map((name) => { const skill = skillTree.find((item) => item.name === name); return skill ? <span key={name} title={name} aria-label={name}><SkillIcon icon={skill.icon} className="size-11" rounded="rounded-xl" /></span> : null; })}
+    <section id="trabalho" aria-labelledby="trabalho-titulo" className="scroll-mt-16">
+      <div ref={ref} style={{ "--h": height } as React.CSSProperties} className="relative md:h-[var(--h)]">
+        <div className="flex flex-col pb-6 pt-24 md:sticky md:top-0 md:h-svh md:justify-center md:pt-20">
+        <Container>
+          <SectionHeader
+            id="trabalho-titulo"
+            title={work.title}
+            aside={
+              <>
+                <p className="font-medium text-fg">{work.subtitle}</p>
+                <p className="mt-2">{work.text}</p>
+              </>
+            }
+          />
+        </Container>
+          <Container className="mt-6 w-full">
+            <div className="grid items-center gap-4 md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] md:gap-12">
+              <div key={p.slug} className="fact-in order-2 md:order-1" aria-live="polite">
+                <p className="text-[12px] font-medium uppercase tracking-[0.13em] text-accent-2">
+                  {p.category} / {p.platform}
+                </p>
+                <h3 className="mt-4 text-[44px] leading-none sm:text-[60px] lg:text-[64px] [@media(min-height:1000px)]:lg:text-[76px]">{p.name}</h3>
+                <p className="mt-5 max-w-[40ch] text-[17px] leading-relaxed text-fg-2 lg:text-[18px]">{p.solution}</p>
+                <p className="mt-4 text-[14px] text-fg-2">
+                  <span className="text-fg">Cliente</span> · {p.client}
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2" aria-label={`Tecnologias de ${p.name}`}>
+                  {p.stack.map((name) => {
+                    const skill = skillTree.find((item) => item.name === name);
+                    return skill ? (
+                      <span key={name} title={name} aria-label={name}>
+                        <SkillIcon icon={skill.icon} className="size-10" rounded="rounded-xl" />
+                      </span>
+                    ) : null;
+                  })}
                 </div>
-                <Link href={`/projetos/${p.slug}`} className="mt-9 inline-flex min-h-11 items-center gap-4 rounded-full bg-white px-5 text-[15px] font-medium text-black transition-colors hover:bg-white/85">Explorar o projeto <span aria-hidden="true">↗</span></Link>
+                <Link
+                  href={`/projetos/${p.slug}`}
+                  className="mt-7 inline-flex min-h-11 items-center gap-4 rounded-full bg-white px-5 text-[15px] font-medium text-black transition-colors hover:bg-white/85"
+                >
+                  Explorar o projeto <span aria-hidden="true">↗</span>
+                </Link>
               </div>
-              <div className="relative order-1 flex h-[300px] items-center justify-center md:order-2 md:h-[460px]" style={{ background: `radial-gradient(ellipse at center, ${p.glow}35, transparent 70%)` }}>
-                {p.media ? <Image key={p.slug} src={p.media.src} alt={`Apresentação de ${p.name}`} width={p.media.width} height={p.media.height} sizes="(min-width: 768px) 45vw, 90vw" className="relative max-h-[88%] w-auto max-w-full object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.4)]" /> : null}
+
+              <div
+                key={`media-${p.slug}`}
+                className="fact-fig relative order-1 flex h-[26svh] items-center justify-center md:order-2 md:h-[min(36svh,320px)] [@media(min-height:1000px)]:md:h-[min(52svh,460px)]"
+                style={{ background: `radial-gradient(ellipse at center, ${p.glow}35, transparent 70%)` }}
+              >
+                {p.gallery[0] ? (
+                  <Image
+                    src={p.gallery[0].src}
+                    alt={`Apresentação de ${p.name}`}
+                    width={p.gallery[0].width}
+                    height={p.gallery[0].height}
+                    sizes="(min-width: 768px) 45vw, 90vw"
+                    quality={90}
+                    className="relative max-h-[88%] w-auto max-w-full object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.4)]"
+                  />
+                ) : null}
               </div>
             </div>
-          </article>
+
+            <nav aria-label="Projetos" className="mt-8 flex flex-wrap gap-2 md:hidden">
+              {collection.map((c, i) => (
+                <button
+                  key={c.slug}
+                  type="button"
+                  aria-pressed={i === index}
+                  onClick={() => setPicked(i)}
+                  className={`min-h-11 rounded-full border px-4 text-[14px] transition-colors ${i === index ? "border-accent text-fg" : "border-line-2 text-fg-3"}`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </nav>
+            <div className="hidden md:block">
+              <StepNav label="Projetos" items={collection.map((c) => c.name)} index={index} progress={progress} onSelect={goTo} />
+            </div>
+            <p className="mt-5 max-w-[80ch] text-[13px] leading-relaxed text-fg-3">{work.note}</p>
+          </Container>
         </div>
       </div>
-      <p className="mt-10 max-w-[80ch] text-[14px] leading-relaxed text-fg-2">{work.note}</p>
-      </Container>
+
+      <div className="h-16 lg:h-24" aria-hidden="true" />
     </section>
   );
 }

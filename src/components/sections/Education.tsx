@@ -1,56 +1,39 @@
+import { HAIRLINE_VERSIONS } from "@/content/hairline-versions";
 import { education } from "@/content/site";
-import { Parallax } from "../Parallax";
-import { Reveal } from "../Reveal";
+import { EduTimeline } from "../EduTimeline";
 import { Container } from "../ui";
-import { FactIllustration } from "./FactIllustration";
 
-/** Formação atual: painel com ilustração própria, entre a abertura e o método. */
+/** Formação em destaque: seção própria, com a figura do Hairline e o andamento do curso mês a mês. */
 export function Education() {
-  const rows = [
-    { term: "Instituição", value: education.institution },
-    { term: "Período", value: education.period },
-    { term: "Situação", value: education.status },
-  ];
-
   return (
-    <section aria-labelledby="formacao-titulo" className="pb-28 lg:pb-40">
+    <section id="formacao" aria-labelledby="formacao-titulo" className="scroll-mt-16 py-24 lg:py-36">
       <Container>
-        <Reveal>
-          <article className="fact-card grid items-center gap-10 overflow-hidden rounded-[24px] border border-line-2 bg-panel p-7 sm:p-10 lg:grid-cols-12 lg:gap-12 lg:p-14">
-            <div className="lg:col-span-7">
-              <p className="text-[14px] font-medium text-accent-2">{education.label}</p>
-              <h2
-                id="formacao-titulo"
-                className="mt-5 text-balance text-[34px] leading-[1.05] sm:text-[46px] lg:text-[58px]"
-              >
-                {education.title}
-              </h2>
-              <p className="mt-5 max-w-[48ch] text-[17px] leading-relaxed text-fg-2">{education.text}</p>
+        <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:gap-16">
+          <div>
+            <p className="text-[14px] font-medium text-accent-2">
+              {education.label} / {education.status}
+            </p>
+            <h2 id="formacao-titulo" className="mt-5 text-balance text-[40px] leading-[1.02] sm:text-[56px] lg:text-[72px]">
+              {education.title}
+            </h2>
+            <p className="mt-7 max-w-[52ch] text-[18px] leading-relaxed text-fg-2">{education.text}</p>
+            <p className="mt-5 text-[16px] text-fg-2">
+              <span className="font-medium text-fg">{education.institution}</span> · {education.period}
+            </p>
+          </div>
+          <div className="flex items-center justify-center">
+            <iframe
+              src={`/hairline/impressora.html?v=${HAIRLINE_VERSIONS.impressora}`}
+              title="Impressora 3D construindo uma torre de sete camadas. Passe o cursor sobre uma camada para escolher qual está sendo impressa."
+              loading="lazy"
+              className="block aspect-[5/4] w-full max-w-[520px] border-0 pointer-coarse:pointer-events-none"
+            />
+          </div>
+        </div>
 
-              <dl className="mt-10 grid max-w-[560px] gap-x-10 gap-y-6 sm:grid-cols-2">
-                {rows.slice(0, 2).map((r) => (
-                  <div key={r.term} className="border-t border-line-2 pt-4">
-                    <dt className="text-[14px] text-fg-3">{r.term}</dt>
-                    <dd className="mt-1 text-[18px] font-medium text-fg">{r.value}</dd>
-                  </div>
-                ))}
-                <div className="border-t border-line-2 pt-4 sm:col-span-2">
-                  <dt className="text-[14px] text-fg-3">{rows[2].term}</dt>
-                  <dd className="mt-1 flex items-center gap-2 text-[18px] font-medium text-fg">
-                    <span aria-hidden="true" className="size-2 rounded-full bg-accent-2" />
-                    {rows[2].value}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-
-            <Parallax speed={0.06} rotate={4} className="lg:col-span-5">
-              <div className="mx-auto w-full max-w-[360px]">
-                <FactIllustration scene="education" />
-              </div>
-            </Parallax>
-          </article>
-        </Reveal>
+        <div className="mt-14 border-t border-line-2 pt-10 lg:mt-20 lg:pt-12">
+          <EduTimeline />
+        </div>
       </Container>
     </section>
   );
