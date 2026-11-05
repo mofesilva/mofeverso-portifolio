@@ -1,4 +1,4 @@
-import { brandIcons, riverpodIcon } from "@/content/skill-icons";
+import { brandIcons, linkedinIcon, riverpodIcon } from "@/content/skill-icons";
 
 type Tone = "base" | "path" | "active";
 
@@ -23,7 +23,7 @@ export function SkillIcon({
   className?: string;
   rounded?: string;
 }) {
-  const data = icon === "riverpod" ? riverpodIcon : brandIcons[icon];
+  const data = icon === "riverpod" ? riverpodIcon : icon === "linkedin" ? linkedinIcon : brandIcons[icon];
   return (
     <span
       aria-hidden="true"

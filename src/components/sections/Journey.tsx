@@ -13,7 +13,7 @@ const stages = [
 
 export function Journey() {
   return (
-    <Section id="sobre" labelledBy="sobre-titulo">
+    <Section id="sobre" labelledBy="sobre-titulo" divider={false}>
       <SectionHeader
         id="sobre-titulo"
         title={journeyIntro.title}

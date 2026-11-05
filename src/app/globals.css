@@ -306,3 +306,21 @@ h3 {
   .journey-marker svg { width: 22px; height: 22px; }
   .journey-step:not(:last-child) .journey-track::before { top: 48px; left: 23px; }
 }
+
+/* Interesses: linhas de palavras repetidas que correm em sentidos opostos. Roda sempre, sem depender de prefers-reduced-motion. */
+@keyframes interest-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.interest-track { display: flex; width: max-content; animation: interest-run var(--interest-time, 80s) linear infinite; }
+.interest-track[data-reverse="true"] { animation-direction: reverse; }
+
+/* Vidro fosco: fundo roxo translúcido (cores do site) com desfoque leve, realces de luz nas bordas. */
+.interest-glass {
+  background: linear-gradient(135deg, rgb(173 163 255 / 0.2), rgb(106 92 230 / 0.14) 55%, rgb(139 83 197 / 0.18));
+  -webkit-backdrop-filter: blur(6px) saturate(1.3) brightness(1.25);
+  backdrop-filter: blur(6px) saturate(1.3) brightness(1.25);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 -1px 0 rgb(255 255 255 / 0.08),
+    inset 1px 0 0 rgb(255 255 255 / 0.12),
+    0 20px 60px rgb(0 0 0 / 0.45);
+}

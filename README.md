@@ -12,4 +12,4 @@ pnpm typecheck
 - Todo o texto fica em `src/content/*.ts`.
 - Imagens: coloque os arquivos em `public/images/` (`mofe.jpg` e `projects/*`). Enquanto faltarem, o site mostra um cartão com o nome esperado.
 - Defina `NEXT_PUBLIC_SITE_URL` com o domínio de produção (canonical, sitemap e Open Graph).
-- Deploy: Vercel sem configuração, ou `docker compose up -d --build` (saída `standalone`, porta 3000 em 127.0.0.1, atrás do Nginx).
+- Deploy: Vercel sem configuração, ou `docker compose up -d --build` (saída `standalone`, porta 9010 em 127.0.0.1, atrás do Nginx).

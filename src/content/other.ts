@@ -43,9 +43,8 @@ export const studio: StudioProject[] = [
   {
     n: "04",
     name: "Minim Agent",
-    stage: "Projeto pessoal",
-    text: "Tarefas, projetos, agenda, notas, listas de games, livros, filmes e animes, diário alimentar e finanças em um só app, cada área como um módulo com tags e vínculos compartilhados. Um agente de IA registra o que você conta; as telas permitem editar à mão, no mesmo banco.",
-    notice: "Conecta-se ao Obsidian e traz as finanças do Finch. Os dados ficam em servidor próprio, expostos por uma API com MCP, para você usar o assistente que preferir.",
+    stage: "Projeto pessoal, em concepção",
+    text: "Um agente de gestão de produtividade com dados persistidos em banco de dados e acessados via MCP. Um app acompanha o agente para a gestão visual desses dados.",
     figure: "minim",
   },
 ];

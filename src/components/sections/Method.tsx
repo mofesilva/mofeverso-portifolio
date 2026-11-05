@@ -27,15 +27,26 @@ export function Method() {
             <span className="flex items-center gap-2"><span className="size-3 rounded-full bg-stage" /> Etapas do método</span>
           </div>
         </div>
-        <div className="mt-14 grid grid-cols-1 gap-4 sm:mt-20 sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">
-          {practice.map((item, index) => (
-            <article key={item.title} className="flex flex-col rounded-[20px] border border-line-2 bg-panel p-6 sm:p-7">
-              <span className="font-mono text-[12px] text-accent-2">0{index + 1}</span>
-              <div className="mt-3 flex min-h-[208px] items-center justify-center"><MethodIllustration index={index} /></div>
-              <h3 className="mt-5 text-[26px] leading-tight text-fg">{item.title}</h3>
-              <p className="mt-4 text-[15px] leading-relaxed text-fg-2">{item.text}</p>
-            </article>
-          ))}
+        <div className="mt-14 grid grid-cols-1 gap-4 sm:mt-20 lg:mt-24 lg:grid-cols-12">
+          {practice.map((item, index) => {
+            const wide = index === 0 || index === 3;
+            return (
+              <article
+                key={item.title}
+                className={`flex flex-col rounded-[20px] border border-line-2 bg-panel p-6 sm:p-8 ${wide ? "lg:col-span-7 lg:flex-row lg:items-center lg:gap-8" : "lg:col-span-5"} ${index === 3 ? "lg:flex-row-reverse" : ""}`}
+              >
+                <div className={wide ? "lg:w-1/2" : ""}>
+                  <span className="font-mono text-[12px] text-accent-2">0{index + 1}</span>
+                  <div className={`flex min-h-[208px] items-center justify-center ${wide ? "mt-3 lg:hidden" : "mt-3"}`}><MethodIllustration index={index} /></div>
+                  <h3 className="mt-5 text-[26px] leading-tight text-fg lg:mt-4">{item.title}</h3>
+                  <p className="mt-4 text-[15px] leading-relaxed text-fg-2">{item.text}</p>
+                </div>
+                {wide && (
+                  <div className="hidden min-h-[240px] items-center justify-center lg:flex lg:w-1/2"><MethodIllustration index={index} /></div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </Container>
     </section>

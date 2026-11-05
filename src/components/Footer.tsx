@@ -9,13 +9,13 @@ export function Footer() {
         <p>
           <span className="font-semibold text-fg">{site.brand}</span> {footer.line}
         </p>
-        <div className="flex items-center gap-6">
-          <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-fg">
-            LinkedIn
-          </a>
-          <a href={site.github} target="_blank" rel="noopener noreferrer" className="hover:text-fg">
-            GitHub
-          </a>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          {site.links.map((link) => (
+            <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="hover:text-fg">
+              {link.label}
+              <span className="sr-only"> ({site.newTab})</span>
+            </a>
+          ))}
           <Link href="/#topo" className="hover:text-fg">
             {footer.top}
           </Link>

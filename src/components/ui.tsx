@@ -89,7 +89,7 @@ export function Section({
     <section
       id={id}
       aria-labelledby={labelledBy}
-      className={`scroll-mt-16 py-24 lg:py-32 ${divider ? "border-t border-line" : "pt-0 lg:pt-0"}`}
+      className={`scroll-mt-16 py-24 lg:py-32 ${divider ? "border-t border-line" : ""}`}
     >
       <Container>{children}</Container>
     </section>

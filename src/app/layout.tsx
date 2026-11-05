@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Rajdhani, Space_Grotesk } from "next/font/google";
+import { ContactDock } from "@/components/ContactDock";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -29,7 +30,7 @@ const rajdhani = Rajdhani({
   display: "swap",
 });
 
-export const viewport: Viewport = { themeColor: "#09090b", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#09090b", colorScheme: "dark", viewportFit: "cover" };
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <SmoothScroll />
         <ScrollProgress />
+        <ContactDock />
         <Nav />
         <script
           type="application/ld+json"

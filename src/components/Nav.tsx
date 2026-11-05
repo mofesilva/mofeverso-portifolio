@@ -1,87 +1,111 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { site } from "@/content/site";
+import GooeyNav from "./GooeyNav";
+import { SkillIcon } from "./SkillIcon";
+import StaggeredMenu from "./StaggeredMenu";
 
-/** Barra fixa: fica translúcida com borda depois que a página rola. */
+/** Desktop: o Mofe é a primeira opção e leva ao topo (Hero); o Contato é a última, como as demais seções. */
+const sections = [...site.nav, site.contactCta];
+const desktopItems = [{ label: site.brand, href: "/#topo" }, ...sections];
+const menuItems = [...site.nav, site.contactCta].map((i) => ({ label: i.label, ariaLabel: `Ir para ${i.label}`, link: i.href }));
+const socials = site.links.map((l) => ({
+  label: l.label,
+  link: l.href,
+  ariaLabel: `${l.label}, ${l.handle} (${site.newTab})`,
+  icon: <SkillIcon icon={l.icon} className="size-11" rounded="rounded-full" />,
+}));
+
+const big = { "--gn-font": "15px", "--gn-x": "16px", "--gn-y": "10px", "--gn-pad": "6px" } as CSSProperties;
+
+/** Navbar: a partir de lg, uma só pílula flutuante (GooeyNav) com o Mofe, as seções e o Contato; abaixo disso, o Staggered Menu. */
 export function Nav() {
+  const [section, setSection] = useState(-1);
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  // Após um clique, a seleção fica no item clicado até a rolagem suave parar (sem passar por cada seção do caminho).
+  const lock = useRef<{ index: number; timer: number } | null>(null);
 
+  // Seção ativa: a última cujo topo já passou de 40% da altura da tela (-1 = antes de todas).
   useEffect(() => {
+    const items = sections;
+    const update = () => {
+      if (lock.current) {
+        window.clearTimeout(lock.current.timer);
+        const index = lock.current.index;
+        lock.current.timer = window.setTimeout(() => {
+          lock.current = null;
+          update();
+        }, 160);
+        setSection(index);
+        return;
+      }
+      let idx = -1;
+      items.forEach((item, i) => {
+        const el = document.getElementById(item.href.split("#")[1]);
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) idx = i;
+      });
+      setSection(idx);
+    };
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
-  // Com o menu aberto a página por trás não rola.
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
+  const choose = (_: number, item: { href?: string }) => {
+    // -1 = topo (Hero), antes da primeira seção.
+    const index = item.href === "/#topo" ? -1 : sections.findIndex((i) => i.href === item.href);
+    if (index === -1 && item.href !== "/#topo") return;
+    if (lock.current) window.clearTimeout(lock.current.timer);
+    lock.current = {
+      index,
+      timer: window.setTimeout(() => {
+        lock.current = null;
+      }, 1500),
     };
-  }, [open]);
+    setSection(index);
+  };
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled || open ? "border-b border-line bg-bg/95 backdrop-blur-xl" : "border-b border-transparent"
-      }`}
-    >
-      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6">
-        <Link href="/#topo" className="flex items-baseline gap-2.5" onClick={() => setOpen(false)}>
-          <span className="text-[18px] font-semibold tracking-[-0.02em]">{site.brand}</span>
-          <span className="hidden text-[13px] text-fg-3 sm:inline">{site.name}</span>
-        </Link>
-
-        <nav aria-label="Principal" className="hidden md:block">
-          <ul className="flex items-center gap-8 text-[14px] text-fg-2">
-            {site.nav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="transition-colors hover:text-fg">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href={site.contactCta.href}
-            className="hidden h-9 items-center rounded-full bg-white px-4 text-[14px] font-medium text-black transition-colors hover:bg-white/85 md:inline-flex"
-          >
-            {site.contactCta.label}
-          </Link>
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-controls="menu-movel"
-            onClick={() => setOpen((v) => !v)}
-            className="h-9 rounded-full border border-line-2 px-4 text-[14px] md:hidden"
-          >
-            {open ? "Fechar" : "Menu"}
-          </button>
-        </div>
+    <>
+    <header className="pointer-events-none fixed inset-x-0 top-3 z-50 flex items-center justify-center gap-2 px-3">
+      <div className="pointer-events-auto hidden lg:block">
+        <GooeyNav
+          items={desktopItems}
+          activeIndex={section + 1}
+          theme="dark"
+          size="md"
+          frame
+          style={big}
+          onChange={choose}
+        />
       </div>
-
-      {open ? (
-        <nav id="menu-movel" aria-label="Principal" className="absolute inset-x-0 top-full h-[calc(100svh-4rem)] overflow-y-auto border-t border-line bg-bg px-6 pb-6 md:hidden">
-          <ul className="flex flex-col">
-            {[...site.nav, site.contactCta].map((item) => (
-              <li key={item.href} className="border-b border-line last:border-0">
-                <Link href={item.href} onClick={() => setOpen(false)} className="block py-4 text-[20px] font-medium">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      ) : null}
     </header>
+    <StaggeredMenu
+      className={`lg:hidden${scrolled ? " is-scrolled" : ""}`}
+      isFixed
+      position="right"
+      logoText={site.brand}
+      menuLabel="Menu"
+      closeLabel="Fechar"
+      socialsTitle="Perfis"
+      items={menuItems}
+      socialItems={socials}
+      displayItemNumbering={false}
+      colors={["#121216", "#09090b"]}
+      accentColor="#ada3ff"
+      menuButtonColor="#ededef"
+      openMenuButtonColor="#ededef"
+      changeMenuColorOnOpen={false}
+    />
+    </>
   );
 }

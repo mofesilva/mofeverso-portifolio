@@ -1,7 +1,28 @@
+# dependências e build (o Docker refaz dentro da imagem)
 node_modules
 .next
+out
+*.tsbuildinfo
+next-env.d.ts
+
+# git e ferramentas locais
 .git
+.gitignore
+.claude
+.playwright-mcp
+.vscode
+.idea
+
+# arquivos que não entram na imagem
 Dockerfile
+.dockerignore
 docker-compose.yml
 *.md
 .env*
+*.pem
+npm-debug.log*
+
+# rascunhos e fontes de ilustração (o site usa só public/)
+backup
+hairline
+scripts

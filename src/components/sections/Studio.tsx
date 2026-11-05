@@ -40,10 +40,10 @@ export function Studio() {
   const p = studio[selected];
   const { Figure, label } = figures[p.figure];
   return (
-    <section id="atelie" aria-labelledby="atelie-titulo" className="scroll-mt-16 py-24 lg:py-36">
+    <section id="laboratorio" aria-labelledby="laboratorio-titulo" className="scroll-mt-16 py-24 lg:py-36">
       <Container>
         <SectionHeader
-          id="atelie-titulo"
+          id="laboratorio-titulo"
           title={studioIntro.title}
           aside={
             <>
@@ -53,18 +53,25 @@ export function Studio() {
           }
         />
 
-        <nav aria-label="Escolher projeto em construção" className="mt-14 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:mt-16">
+        <nav aria-label="Escolher experimento do laboratório" className="mt-12 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:mt-14">
           {studio.map((project, i) => (
             <button
               key={project.name}
               type="button"
               aria-pressed={selected === i}
               onClick={() => setSelected(i)}
-              className={`flex h-16 items-center justify-center rounded-2xl border bg-panel px-3 text-[20px] font-semibold tracking-[-0.02em] transition-colors sm:h-20 sm:text-[24px] ${
+              className={`flex items-center gap-2 rounded-xl border bg-panel py-2 pl-2 pr-3 text-left text-[14px] font-semibold transition-colors ${
                 selected === i ? "border-accent text-fg ring-1 ring-accent" : "border-line-2 text-fg-2 hover:border-fg-3 hover:text-fg"
               }`}
             >
-              {project.name}
+              {/* A mesma ilustração do painel, em miniatura ao lado do nome. */}
+              <span aria-hidden="true" className="pointer-events-none size-12 shrink-0">
+                {(() => {
+                  const { Figure: Mini } = figures[project.figure];
+                  return <Mini theme="dark" label="" className="hairline-figure size-full" />;
+                })()}
+              </span>
+              <span className="min-w-0 truncate">{project.name}</span>
             </button>
           ))}
         </nav>

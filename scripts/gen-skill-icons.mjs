@@ -7,6 +7,7 @@ const slugs = [
   "flutter", "dart", "nextdotjs", "react", "typescript", "javascript", "nodedotjs",
   "express", "mysql", "mongodb", "docker", "git", "github", "debian", "jest",
   "firebase", "akamai", "zod", "electron", "sqlite", "vite", "tailwindcss",
+  "instagram", "youtube",
 ];
 
 const all = Object.values(si).filter((v) => v && typeof v === "object" && v.slug);
@@ -26,6 +27,13 @@ export const brandIcons: Record<string, BrandIcon> = ${JSON.stringify(out, null,
 export const riverpodIcon: BrandIcon = {
   path: "M3 8c3-3 6 3 9 0s6 3 9 0M3 13c3-3 6 3 9 0s6 3 9 0M3 18c3-3 6 3 9 0s6 3 9 0",
   hex: "53B1FD",
+  stroke: true,
+};
+
+/** O LinkedIn saiu do simple-icons: glifo próprio em traço. */
+export const linkedinIcon: BrandIcon = {
+  path: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4z",
+  hex: "0A66C2",
   stroke: true,
 };
 `;

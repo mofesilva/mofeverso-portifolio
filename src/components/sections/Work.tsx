@@ -39,15 +39,23 @@ export function Work() {
           <SectionHeader
             id="trabalho-titulo"
             title={work.title}
-            aside={
-              <>
-                <p className="font-medium text-fg">{work.subtitle}</p>
-                <p className="mt-2">{work.text}</p>
-              </>
-            }
+            aside={<p>{work.comment}</p>}
           />
         </Container>
           <Container className="mt-6 w-full">
+            <nav aria-label="Projetos" className="mb-6 flex flex-wrap gap-2 md:hidden">
+              {collection.map((c, i) => (
+                <button
+                  key={c.slug}
+                  type="button"
+                  aria-pressed={i === index}
+                  onClick={() => setPicked(i)}
+                  className={`min-h-11 rounded-full border px-4 text-[14px] transition-colors ${i === index ? "border-accent text-fg" : "border-line-2 text-fg-3"}`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </nav>
             <div className="grid items-center gap-4 md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] md:gap-12">
               <div key={p.slug} className="fact-in order-2 md:order-1" aria-live="polite">
                 <p className="text-[12px] font-medium uppercase tracking-[0.13em] text-accent-2">
@@ -78,10 +86,31 @@ export function Work() {
 
               <div
                 key={`media-${p.slug}`}
-                className="fact-fig relative order-1 flex h-[26svh] items-center justify-center md:order-2 md:h-[min(36svh,320px)] [@media(min-height:1000px)]:md:h-[min(52svh,460px)]"
+                className="fact-fig relative order-1 flex h-[var(--stage)] items-center justify-center [--stage:26svh] md:order-2 md:[--stage:min(36svh,320px)] [@media(min-height:1000px)]:md:[--stage:min(52svh,460px)]"
                 style={{ background: `radial-gradient(ellipse at center, ${p.glow}35, transparent 70%)` }}
               >
-                {p.gallery[0] ? (
+                {p.gallery[0]?.kind === "browser" ? (
+                  // Mesma moldura de navegador da galeria do projeto.
+                  <div
+                    className="relative flex max-h-[92%] max-w-full flex-col overflow-hidden rounded-xl border border-line-2 shadow-[0_25px_35px_rgba(0,0,0,0.4)]"
+                    style={{ width: `min(100%, calc((var(--stage) * 0.92 - 24px) * ${p.gallery[0].width / p.gallery[0].height}))` }}
+                  >
+                    <div aria-hidden="true" className="flex h-5 shrink-0 items-center gap-1.5 bg-panel-2 px-3 md:h-6">
+                      <span className="size-2 rounded-full bg-white/20" />
+                      <span className="size-2 rounded-full bg-white/20" />
+                      <span className="size-2 rounded-full bg-white/20" />
+                    </div>
+                    <Image
+                      src={p.gallery[0].src}
+                      alt={`Apresentação de ${p.name}`}
+                      width={p.gallery[0].width}
+                      height={p.gallery[0].height}
+                      sizes="(min-width: 768px) 45vw, 90vw"
+                      quality={90}
+                      className="block h-auto w-full min-h-0 object-contain"
+                    />
+                  </div>
+                ) : p.gallery[0] ? (
                   <Image
                     src={p.gallery[0].src}
                     alt={`Apresentação de ${p.name}`}
@@ -95,19 +124,6 @@ export function Work() {
               </div>
             </div>
 
-            <nav aria-label="Projetos" className="mt-8 flex flex-wrap gap-2 md:hidden">
-              {collection.map((c, i) => (
-                <button
-                  key={c.slug}
-                  type="button"
-                  aria-pressed={i === index}
-                  onClick={() => setPicked(i)}
-                  className={`min-h-11 rounded-full border px-4 text-[14px] transition-colors ${i === index ? "border-accent text-fg" : "border-line-2 text-fg-3"}`}
-                >
-                  {c.name}
-                </button>
-              ))}
-            </nav>
             <div className="hidden md:block">
               <StepNav label="Projetos" items={collection.map((c) => c.name)} index={index} progress={progress} onSelect={goTo} />
             </div>

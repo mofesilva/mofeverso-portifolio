@@ -225,8 +225,8 @@ export const projects: Project[] = [
     stack: ["Flutter", "Dart", "Node.js", "MongoDB"],
     flow: { nodes: ["Cliente", "Busca", "Perfil", "Avaliações", "Contato", "Prestador"], edges: chain(6) },
     gallery: [
-      { src: `${dir}/contrataja/00-capa.webp`, width: 1046, height: 2157, kind: "phone", alt: "Aplicativo ContrataJá" },
-      wide("contrataja", "web-1", 2400, 1838, "Tela de entrada do ContrataJá no tablet"),
+      ...[1, 2, 3, 4, 5, 6, 7, 8].map((i) => ({ ...phone("contrataja", `iphone-${i}`, `ContrataJá, tela ${i}`), width: 1075, height: 2166 })),
+      wide("contrataja", "ipad", 2400, 1838, "Tela de entrada do ContrataJá no tablet"),
     ],
     link: dzigne("contrata-ja"),
     glow: "#b08300",

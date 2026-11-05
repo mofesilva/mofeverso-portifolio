@@ -5,10 +5,10 @@ import { Section, SectionHeader } from "../ui";
 import type { ResolvedSkill } from "./SkillCard";
 import { SkillTree } from "./SkillTree";
 
-/** Projetos com página própria e projetos do ateliê, com a tecnologia de cada um. */
+/** Projetos com página própria e projetos do laboratório, com a tecnologia de cada um. */
 const index = [
   ...projects.map((p) => ({ name: p.name, href: `/projetos/${p.slug}`, stack: p.stack })),
-  ...studio.map((s) => ({ name: s.name, href: "/#atelie", stack: s.stack ?? [] })),
+  ...studio.map((s) => ({ name: s.name, href: "/#laboratorio", stack: s.stack ?? [] })),
 ];
 
 /** Projetos de cada habilidade: os que a listam no stack, mais os indicados à mão e os herdados. */
@@ -38,7 +38,7 @@ function resolve(): ResolvedSkill[] {
 
 export function Skills() {
   return (
-    <Section id="habilidades" labelledBy="habilidades-titulo">
+    <Section id="habilidades" labelledBy="habilidades-titulo" divider={false}>
       <SectionHeader id="habilidades-titulo" title={skillsIntro.title} aside={<p>{skillsIntro.text}</p>} />
       <SkillTree skills={resolve()} initial="flutter" labels={skillsIntro.card} />
     </Section>

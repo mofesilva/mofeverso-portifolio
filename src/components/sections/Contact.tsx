@@ -5,7 +5,7 @@ import { CopyEmail } from "./CopyEmail";
 
 export function Contact() {
   return (
-    <section id="contato" aria-labelledby="contato-titulo" className="relative scroll-mt-16 overflow-hidden border-t border-line py-28 lg:py-36">
+    <section id="contato" aria-labelledby="contato-titulo" className="relative scroll-mt-16 overflow-hidden py-28 lg:py-36">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute bottom-[-320px] left-1/2 h-[640px] w-[1100px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(106,92,230,0.24),rgba(139,83,197,0.1)_55%,transparent)]"

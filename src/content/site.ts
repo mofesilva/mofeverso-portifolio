@@ -6,15 +6,26 @@ export const site = {
   title: "Mofe — Engenharia de software",
   description:
     "Moisés Ferreira e Silva, Mofe. Engenharia full stack com IA no processo, decisões técnicas próprias e experiência em produtos web e mobile.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://mofeverso.com.br",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://mofeverso.com.br",
   email,
   linkedin: "https://www.linkedin.com/in/mofesilva",
   github: "https://github.com/mofesilva",
+  /** Perfis públicos: aparecem no Contato e no rodapé. */
+  links: [
+    { label: "GitHub", handle: "mofesilva", href: "https://github.com/mofesilva", icon: "github" },
+    { label: "LinkedIn", handle: "mofesilva", href: "https://www.linkedin.com/in/mofesilva", icon: "linkedin" },
+    { label: "Instagram Mofeverso", handle: "@mofeverso", href: "https://www.instagram.com/mofeverso", icon: "instagram" },
+    { label: "Instagram Nerdcave", handle: "@nerdcave.studio", href: "https://www.instagram.com/nerdcave.studio", icon: "instagram" },
+    { label: "YouTube Nerdcave", handle: "@nerdcave.studio", href: "https://www.youtube.com/@nerdcave.studio", icon: "youtube" },
+  ],
   nav: [
-    { label: "Trabalho", href: "/#trabalho" },
+    { label: "Formação", href: "/#formacao" },
     { label: "Método", href: "/#metodo" },
+    { label: "Em produção", href: "/#trabalho" },
+    { label: "Laboratório", href: "/#laboratorio" },
     { label: "Habilidades", href: "/#habilidades" },
     { label: "Trajetória", href: "/#sobre" },
+    { label: "Interesses", href: "/#interesses" },
   ],
   contactCta: { label: "Contato", href: "/#contato" },
   newTab: "abre em nova aba",
@@ -22,10 +33,10 @@ export const site = {
 
 export const hero = {
   role: "Engenheiro de software / Full stack",
-  titleStart: "O problema é o começo.",
-  titleEnd: "A IA amplia a construção.",
-  text: "Concepção de soluções, decisões técnicas e implementação conduzida com IA. Base em Flutter e Node.js, com atuação atual também em Next.js, React e TypeScript.",
-  cta: { label: "Ver o trabalho", href: "#trabalho" },
+  titleStart: "Software de ponta a ponta,",
+  titleEnd: "construído com IA.",
+  text: "Engenheiro full stack em Belo Horizonte. Projeta e entrega aplicações web e mobile com IA em cada etapa, e é quem supervisiona e decide o que vai para produção.",
+  cta: { label: "Ver os projetos", href: "#trabalho" },
   portrait: {
     src: "/images/mofe.jpg",
     alt: "Retrato de Moisés Ferreira e Silva",
@@ -59,19 +70,16 @@ export const education = {
 };
 
 export const work = {
-  title: "O software, em uso.",
-  subtitle: "Projetos de equipe e entregas independentes",
-  text: "Educação, gestão institucional, operação condominial e serviços. Produtos construídos em contextos e equipes diferentes.",
-  counter: "06",
-  counterLabel: "projetos",
+  title: "Em produção.",
+  comment: "Seis produtos entregues, em uso por clientes reais.",
   note: "Os produtos profissionais são apresentados como entregas da equipe Dzign-e. Cada projeto distingue o escopo do produto da participação individual.",
   open: "Ver estudo de caso",
 };
 
 export const studioIntro = {
-  title: "O que está em construção agora.",
-  subtitle: "Pesquisa, construção e necessidades pessoais",
-  text: "Experimentos e projetos pessoais, apresentados com seu estágio atual.",
+  title: "O laboratório.",
+  subtitle: "Experimentos fora do trabalho profissional",
+  text: "Projetos que nascem de necessidades pessoais e de curiosidade técnica, sem cliente e sem prazo. Cada um mostra o estágio em que realmente está.",
 };
 
 export const skillsIntro = {
@@ -93,6 +101,15 @@ export const journeyIntro = {
   subtitle: "Repertório além do código",
 };
 
+export const interests = {
+  title: "O que também ocupa a cabeça.",
+  subtitle: "Interesses além do código",
+  words: [
+    "Filosofia", "Teologia", "Engenharia de software", "Game design", "Game development",
+    "História", "Museologia", "Narrativa", "Inteligência artificial", "Cultura nerd", "Educação",
+  ],
+};
+
 export const contact = {
   title: "Qual problema precisa ser resolvido?",
   email,
@@ -108,7 +125,7 @@ export const footer = {
 };
 
 export const caseUi = {
-  back: "Trabalho selecionado",
+  back: "Projetos em produção",
   context: "Contexto",
   product: "O produto",
   flow: "Funcionamento",
