@@ -1,0 +1,33 @@
+/* Órbita do método: a IA gira em volta da decisão; o rótulo gira ao contrário para ficar em pé.
+   A animação é lenta e decorativa, e faz parte do conceito, então não é desligada por "reduzir movimento". */
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.orbit-spin {
+  animation: orbit 12s linear infinite;
+}
+
+.orbit-counter {
+  animation: orbit 12s linear infinite reverse;
+}
+
+.method-orbit { position: absolute; border: 1px dashed rgb(255 255 255 / 0.28); border-radius: 50%; }
+.method-orbit-0 { inset: 33%; }
+.method-orbit-1 { inset: 24%; }
+.method-orbit-2 { inset: 17%; }
+.method-orbit-3 { inset: 2%; }
+.method-orbit-motion { position: absolute; inset: 0; animation: orbit var(--orbit-duration) linear infinite; animation-delay: var(--orbit-delay); }
+.method-orbit-motion-0, .method-orbit-marker-0 { --orbit-duration: 22s; --orbit-delay: 0s; }
+.method-orbit-motion-1, .method-orbit-marker-1 { --orbit-duration: 22s; --orbit-delay: -5.5s; }
+.method-orbit-motion-2, .method-orbit-marker-2 { --orbit-duration: 22s; --orbit-delay: -11s; }
+.method-orbit-motion-3, .method-orbit-marker-3 { --orbit-duration: 22s; --orbit-delay: -16.5s; }
+.method-orbit-marker-0 { --dot-size: 9px; }
+.method-orbit-marker-1 { --dot-size: 22px; }
+.method-orbit-marker-2 { --dot-size: 14px; }
+.method-orbit-marker-3 { --dot-size: 30px; }
+.method-orbit-dot { width: var(--dot-size); height: var(--dot-size); flex: none; border-radius: 50%; background: white; }
+.method-orbit-marker { position: absolute; left: 50%; top: 0; display: flex; align-items: center; gap: 8px; transform: translate(calc(var(--dot-size) / -2), -50%); transform-origin: calc(var(--dot-size) / 2) 50%; animation: orbit-counter-label var(--orbit-duration) linear infinite; animation-delay: var(--orbit-delay); }
+@keyframes orbit-counter-label { from { transform: translate(calc(var(--dot-size) / -2), -50%) rotate(0deg); } to { transform: translate(calc(var(--dot-size) / -2), -50%) rotate(-360deg); } }

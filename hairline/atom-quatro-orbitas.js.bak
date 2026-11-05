@@ -1,0 +1,132 @@
+/**
+ * Atom: a desk model of an atom. Four shells, each a great circle in its own
+ * tilted plane, nest round a nucleus; an orb rides each shell and never stops,
+ * even when the reader asks for less motion, because the orbit is the concept.
+ * The nucleus is one disc split in two, with six more round it, alternating:
+ * the two halves of the work, the medium dot and the bright one. Hovering a
+ * shell slows its orb on a spring so it can be followed, and the whole shell
+ * and its orb take the bright stroke. The slider is the rate the orb keeps.
+ *
+ * The pattern: dilate time. Ambient motion, a spring on the rate, and a hit
+ * test on the shells themselves, which never move, never on the orbs.
+ */
+const { Cam, fit, proj, open, spring, stepS, disposer, mk, place, pointer, register } = HL;
+
+const rad = Math.PI / 180, N = 120, REACH = 20;
+const SHELLS = [
+  { name: "requisitos", r: 50, tilt: 58, az: 15, w: 0.7, ph: 0.4, size: 3.4 },
+  { name: "arquitetura", r: 66, tilt: 58, az: 105, w: 0.55, ph: 2.3, size: 7 },
+  { name: "código", r: 82, tilt: 58, az: 195, w: 0.43, ph: 4.1, size: 4.8 },
+  { name: "testes", r: 98, tilt: 58, az: 285, w: 0.34, ph: 5.6, size: 9.5 },
+];
+
+/** Two unit vectors spanning the plane whose normal leans `tilt` from vertical towards `az`. */
+function basis(tilt, az) {
+  const t = tilt * rad, a = az * rad;
+  const n = [Math.sin(t) * Math.cos(a), Math.sin(t) * Math.sin(a), Math.cos(t)];
+  const s = Math.hypot(n[0], n[1]), u = [n[1] / s, -n[0] / s, 0];
+  const v = [n[1] * u[2] - n[2] * u[1], n[2] * u[0] - n[0] * u[2], n[0] * u[1] - n[1] * u[0]];
+  return { u, v };
+}
+const onShell = (b, r, t) => [0, 1, 2].map((k) => r * (Math.cos(t) * b.u[k] + Math.sin(t) * b.v[k]));
+const isFront = (q) => q[0] + q[1] >= 0;
+
+/** A closed ring of samples split at the silhouette: the run nearer the camera, and the run behind. */
+function halves(world, scr) {
+  const n = world.length, f = world.map(isFront);
+  let s = 0;
+  while (s < n && !(f[s] && !f[(s + n - 1) % n])) s++;
+  const rot = (a) => a.slice(s).concat(a.slice(0, s)), F = rot(f), S = rot(scr);
+  const m = F.indexOf(false);
+  return { front: S.slice(0, m + 1), back: S.slice(m - 1).concat([S[0]]) };
+}
+
+/** The nucleus, flat to the viewer: a disc split down the middle, and six round it, alternating. */
+function nucleus(parent, [cx, cy]) {
+  const R = 11, D = 23.5, g = mk("g", {}, parent);
+  for (let k = 0; k < 6; k++) {
+    const a = (k * 60 - 90) * rad;
+    place(mk("circle", { r: R, class: k % 2 ? "dot m" : "dot" }, g), [cx + D * Math.cos(a), cy + D * Math.sin(a)]);
+  }
+  mk("path", { d: `M${cx} ${cy - R}A${R} ${R} 0 0 0 ${cx} ${cy + R}Z`, class: "dot m" }, g);
+  mk("path", { d: `M${cx} ${cy - R}A${R} ${R} 0 0 1 ${cx} ${cy + R}Z`, class: "dot" }, g);
+}
+
+function mount({ stage, svg, read }, value) {
+  const bag = disposer();
+  let rate = value, act = -1;
+
+  const shells = SHELLS.map((s) => {
+    const b = basis(s.tilt, s.az);
+    return { ...s, b, world: Array.from({ length: N }, (_, k) => onShell(b, s.r, (k / N) * 2 * Math.PI)), a: s.ph, sp: spring(1, { eps: 0.002 }), f: true };
+  });
+  const C = Cam(45, 0.5, 1.9);
+  fit(C, shells.flatMap((s) => s.world), 200, 166);
+  const P = proj(C);
+
+  const g = mk("g", {}, svg), back = mk("g", {}, g), nuc = mk("g", {}, g), front = mk("g", {}, g);
+  nucleus(nuc, P(0, 0, 0));
+  for (const s of shells) {
+    s.scr = s.world.map((q) => P(q[0], q[1], q[2]));
+    const h = halves(s.world, s.scr);
+    s.bk = mk("path", { d: open(h.back), class: "nf lo" }, back);
+    s.fr = mk("path", { d: open(h.front), class: "nf" }, front);
+    s.el = mk("circle", { r: s.size, class: "dot m" }, front);
+  }
+
+  const B = register(stage, (dt) => {
+    const h = Math.min(dt, 0.05);
+    for (const s of shells) {
+      stepS(s.sp, h);
+      s.a += s.w * Math.max(0, s.sp.x) * h;
+      const q = onShell(s.b, s.r, s.a), f = isFront(q);
+      place(s.el, P(q[0], q[1], q[2]));
+      if (f !== s.f) { (f ? front : back).appendChild(s.el); s.f = f; }
+    }
+    return true;
+  });
+  bag.add(B.unregister);
+
+  /** The shell nearest the pointer, by distance to the shell itself, which never moves; -1 when none is near. */
+  function hit(p) {
+    let best = -1, bd = REACH;
+    shells.forEach((s, i) => {
+      for (const q of s.scr) {
+        const d = Math.hypot(q[0] - p[0], q[1] - p[1]);
+        if (d < bd) { bd = d; best = i; }
+      }
+    });
+    return best;
+  }
+
+  function setActive(a) {
+    if (a === act) return;
+    act = a;
+    shells.forEach((s, i) => {
+      const on = i === a;
+      s.fr.setAttribute("class", on ? "nf hi" : "nf");
+      s.bk.setAttribute("class", on ? "nf hi" : "nf lo");
+      s.el.setAttribute("class", on ? "dot" : "dot m");
+      s.sp.t = on ? rate : 1;
+    });
+    read.textContent = a < 0 ? "rest" : shells[a].name;
+    B.wake();
+  }
+
+  bag.add(pointer(stage, { move: (p) => setActive(hit(p)), leave: () => setActive(-1) }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    set: (v) => { rate = v; if (act >= 0) { shells[act].sp.t = rate; B.wake(); } },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "atom",
+  means: "Four orbs circle a nucleus of two halves; hover an orbit and its orb slows so it can be followed.",
+  rules: [1, 4, 6, 8],
+  range: [0.03, 0.12, 0.4],
+  tour: [[137, 98], [303, 79], [316, 279], null],
+  mount,
+});
